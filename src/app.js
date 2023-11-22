@@ -1,8 +1,10 @@
 import express from "express";
 import usersRoutes from "./routes/users.routes.js";
 import facultiesRoutes from "./routes/faculties.routes.js";
+import filesRoutes from "./routes/files.routes.js";
 import fileUpload from "express-fileupload";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 const app = express();
 
 //middlewares
@@ -17,11 +19,15 @@ app.use(
 app.use(
   cors({
     origin: "http://localhost:5173",
+    credentials: true,
   })
 );
+app.use(express.json());
+app.use(cookieParser());
 
 //routes
 app.use("/api/users", usersRoutes);
 app.use("/api/faculties", facultiesRoutes);
+app.use("/api/files", filesRoutes);
 
 export default app;
