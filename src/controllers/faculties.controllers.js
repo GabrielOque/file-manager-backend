@@ -16,8 +16,8 @@ export const createFaculties = async (req, res) => {
       name,
     });
     const facultyCreated = await newFaculty.save();
-    res.send(facultyCreated);
+    return res.send(facultyCreated);
   } catch (error) {
-    res.send({ message: "A ocurrido un error" });
+    return res.send({ message: "A ocurrido un error" });
   }
 };
