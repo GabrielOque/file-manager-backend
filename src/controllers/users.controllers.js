@@ -3,6 +3,8 @@ import fs from "fs-extra";
 import User from "../models/User.js";
 import { createAccessToken } from "../libs/jwt.js";
 import { uploadImage } from "../libs/cloudinary.js";
+import jwt from "jsonwebtoken";
+import { TOKEN_SECRET } from "../config.js";
 
 export const getUsers = async (req, res) => {
   try {
@@ -55,12 +57,15 @@ export const login = async (req, res) => {
     if (!isMatch) return res.send({ message: "Contraseña incorrecta" });
 
     const token = await createAccessToken({
-      id: userFound._id,
+      _id: userFound._id,
       name: userFound.name,
       lastName: userFound.lastName,
       email: userFound.email,
       rol: userFound.rol,
       faculty: userFound.faculty,
+      avatar: userFound.avatar,
+      files: userFound.files,
+      password: userFound.password,
     });
 
     res.cookie("token", token);
@@ -110,4 +115,12 @@ export const updateUser = async (req, res) => {
 export const logout = async (req, res) => {
   res.cookie("token", "", { expires: new Date(0) });
   return res.sendStatus(200);
+};
+
+export const getToken = async (req, res) => {
+  try {
+    return res.send(req.user);
+  } catch (error) {
+    return res.send({ message: "A ocurrido un error" });
+  }
 };
