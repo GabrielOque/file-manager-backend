@@ -6,6 +6,10 @@ import { uploadImage } from "../libs/cloudinary.js";
 import jwt from "jsonwebtoken";
 import { TOKEN_SECRET } from "../config.js";
 
+function generateRandomCode() {
+  return Math.floor(10000 + Math.random() * 90000);
+}
+
 export const getUsers = async (req, res) => {
   try {
     const usersFound = await User.find();
@@ -30,8 +34,9 @@ export const getUsersFaculties = async (req, res) => {
 };
 
 export const createUser = async (req, res) => {
-  const { email, password, rol, faculty } = req.body;
+  const { email, rol, faculty } = req.body;
   try {
+    let password = generateRandomCode().toString();
     const passwordHash = await bcrypt.hash(password, 10);
     const newUser = new User({
       email,
@@ -40,8 +45,10 @@ export const createUser = async (req, res) => {
       faculty,
     });
     const userCreated = await newUser.save();
+    console.log(userCreated);
     return res.send(userCreated);
   } catch (error) {
+    console.log(error);
     return res.send({ message: "A ocurrido un error" });
   }
 };
