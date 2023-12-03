@@ -86,13 +86,13 @@ export const login = async (req, res) => {
       password: userFound.password,
     });
 
-    // res.cookie("token", token, {
-    //   domain: ".onrender.com",
-    //   sameSite: "None",
-    //   secure: true,
-    // });
+    res.cookie("token", token, {
+      domain: ".onrender.com",
+      sameSite: "None",
+      secure: true,
+    });
 
-    res.cookie("token", token);
+    // res.cookie("token", token);
 
     return res.send(userFound);
   } catch (error) {
