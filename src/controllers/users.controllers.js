@@ -87,7 +87,7 @@ export const login = async (req, res) => {
     });
 
     res.cookie("token", token, {
-      domain: "https://file-manager-frontend.onrender.com",
+      domain: ".onrender.com",
       sameSite: "None",
       secure: true,
     });
