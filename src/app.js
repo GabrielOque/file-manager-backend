@@ -2,6 +2,7 @@ import express from "express";
 import usersRoutes from "./routes/users.routes.js";
 import facultiesRoutes from "./routes/faculties.routes.js";
 import filesRoutes from "./routes/files.routes.js";
+import commentsRoutes from "./routes/comments.routes.js";
 import fileUpload from "express-fileupload";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -33,5 +34,6 @@ app.use(cookieParser());
 app.use("/api/users", usersRoutes);
 app.use("/api/faculties", facultiesRoutes);
 app.use("/api/files", filesRoutes);
+app.use("/api/comments", commentsRoutes);
 
 export default app;

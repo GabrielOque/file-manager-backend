@@ -20,3 +20,7 @@ export const uploadFile = async (filePath) => {
 export const deleteImage = async (id) => {
   return await cloudinary.uploader.destroy(id);
 };
+
+export const deleteFileCloudinary = async (id) => {
+  return await cloudinary.uploader.destroy(id);
+};

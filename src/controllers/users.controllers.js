@@ -19,6 +19,17 @@ export const getUsers = async (req, res) => {
   }
 };
 
+export const getUser = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const userFound = await User.findOne({ _id: id });
+    console.log(userFound);
+    return res.send(userFound);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getUsersFaculties = async (req, res) => {
   const { faculty } = req.query;
   try {
@@ -36,7 +47,8 @@ export const getUsersFaculties = async (req, res) => {
 export const createUser = async (req, res) => {
   const { email, rol, faculty } = req.body;
   try {
-    let password = generateRandomCode().toString();
+    const password = generateRandomCode().toString();
+    console.log(password);
     const passwordHash = await bcrypt.hash(password, 10);
     const newUser = new User({
       email,
@@ -44,8 +56,9 @@ export const createUser = async (req, res) => {
       rol,
       faculty,
     });
+
     const userCreated = await newUser.save();
-    console.log(userCreated);
+
     return res.send(userCreated);
   } catch (error) {
     console.log(error);

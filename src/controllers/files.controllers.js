@@ -1,12 +1,13 @@
 import fs from "fs-extra";
-import Files from "../models/File.js";
+import File from "../models/File.js";
 import User from "../models/User.js";
-import { uploadFile } from "../libs/cloudinary.js";
+import Comment from "../models/Comment.js";
+import { uploadFile, deleteFileCloudinary } from "../libs/cloudinary.js";
 
 export const getFiles = async (req, res) => {
   const { id } = req.params;
   try {
-    const filesFound = await Files.find({ author: id });
+    const filesFound = await File.find({ author: id });
     return res.send(filesFound);
   } catch (error) {
     return res.send({ message: "A ocurrido un error" });
@@ -24,7 +25,7 @@ export const createFile = async (req, res) => {
       url: result.secure_url,
     };
 
-    const newFile = new Files({
+    const newFile = new File({
       author,
       name,
       description,
@@ -41,5 +42,36 @@ export const createFile = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.send({ message: "A ocurrido un error" });
+  }
+};
+
+export const approveFile = async (req, res) => {
+  const { id } = req.params;
+  const newStatus = req.body;
+  try {
+    const fileApproved = await File.findOneAndUpdate(
+      { _id: id },
+      { status: newStatus },
+      { new: true }
+    );
+    console.log(fileApproved);
+    return res.send(fileApproved);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const deleteFile = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const fileDeleted = await File.findOneAndDelete({ _id: id });
+    const userAsignedFile = await User.findOne({ _id: fileDeleted.author });
+    userAsignedFile.files.pull(fileDeleted._id);
+    await userAsignedFile.save();
+    await deleteFileCloudinary(fileDeleted.file.public_id);
+    await Comment.deleteMany({ file: id });
+    return res.send(fileDeleted);
+  } catch (error) {
+    console.log(error);
   }
 };

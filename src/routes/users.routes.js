@@ -1,9 +1,5 @@
 import { Router } from "express";
-import {
-  auth,
-  adminAndSuperAdmin,
-  superAdmin,
-} from "../middlewares/auth.middlewares.js";
+import { auth, adminAndSuperAdmin } from "../middlewares/auth.middlewares.js";
 import {
   getUsers,
   createUser,
@@ -12,10 +8,13 @@ import {
   updateUser,
   getUsersFaculties,
   getToken,
+  getUser,
 } from "../controllers/users.controllers.js";
+
 const router = Router();
 
 router.get("/", getUsers);
+router.get("/profile/:id", getUser);
 router.post("/", createUser);
 router.post("/login", login);
 router.post("/logout", auth, logout);
