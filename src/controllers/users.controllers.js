@@ -69,7 +69,9 @@ export const createUser = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log(email, password);
     const userFound = await User.findOne({ email });
+    console.log(userFound);
 
     if (!userFound) return res.send({ message: "Usuario no encontrado" });
 
@@ -92,7 +94,7 @@ export const login = async (req, res) => {
 
     return res.send(userFound);
   } catch (error) {
-    return res.send(error);
+    return res.send({ message: "A ocurrido un error" });
   }
 };
 
