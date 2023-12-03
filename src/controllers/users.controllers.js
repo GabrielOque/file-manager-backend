@@ -87,6 +87,7 @@ export const login = async (req, res) => {
     });
 
     res.cookie("token", token, {
+      httpOnly: true,
       domain: ".onrender.com",
       sameSite: "None",
       secure: true,
