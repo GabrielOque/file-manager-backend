@@ -95,6 +95,7 @@ export const login = async (req, res) => {
 
     return res.send(userFound);
   } catch (error) {
+    console.log(error);
     return res.send({ message: "A ocurrido un error" });
   }
 };
