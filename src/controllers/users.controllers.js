@@ -33,11 +33,9 @@ export const getUser = async (req, res) => {
 export const getUsersFaculties = async (req, res) => {
   const { faculty } = req.query;
   try {
-    console.log(faculty);
     const usersFound = await User.find({ faculty: faculty })
       .populate("files")
       .exec();
-    console.log(usersFound);
     return res.send(usersFound);
   } catch (error) {
     console.log(error);
@@ -88,7 +86,11 @@ export const login = async (req, res) => {
       password: userFound.password,
     });
 
-    res.cookie("token", token, { sameSite: "None", secure: true });
+    res.cookie("token", token, {
+      domain: "https://file-manager-frontend.onrender.com",
+      sameSite: "None",
+      secure: true,
+    });
 
     return res.send(userFound);
   } catch (error) {
