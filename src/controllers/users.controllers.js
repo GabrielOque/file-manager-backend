@@ -75,8 +75,6 @@ export const login = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, userFound.password);
     if (!isMatch) return res.send({ message: "Contraseña incorrecta" });
-
-    console.log("Antes");
     const token = await createAccessToken({
       _id: userFound._id,
       name: userFound.name,
@@ -88,10 +86,8 @@ export const login = async (req, res) => {
       files: userFound.files,
       password: userFound.password,
     });
-    console.log(token);
-    console.log("DEspues");
 
-    res.cookie("token", token);
+    res.cookie("token", token, { sameSite: "None", secure: true });
 
     return res.send(userFound);
   } catch (error) {
