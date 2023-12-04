@@ -6,6 +6,7 @@ import Comment from "../models/Comment.js";
 export const getFaculties = async (req, res) => {
   try {
     const facultiesFound = await Faculty.find();
+    console.log(facultiesFound);
     res.send(facultiesFound);
   } catch (error) {
     console.log(error);

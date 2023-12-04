@@ -36,6 +36,8 @@ export const getUsersFaculties = async (req, res) => {
     const usersFound = await User.find({ faculty: faculty })
       .populate("files")
       .exec();
+
+    console.log(usersFound);
     return res.send(usersFound);
   } catch (error) {
     console.log(error);
@@ -87,14 +89,10 @@ export const login = async (req, res) => {
     });
 
     res.cookie("token", token, {
-      httpOnly: false,
-      domain: ".onrender.com",
-      sameSite: "none",
+      httpOnly: true,
       secure: true,
     });
-
-    // res.cookie("token", token);
-
+    console.log(token);
     return res.send(userFound);
   } catch (error) {
     console.log(error);

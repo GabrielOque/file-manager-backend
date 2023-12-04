@@ -8,6 +8,7 @@ export const getFiles = async (req, res) => {
   const { id } = req.params;
   try {
     const filesFound = await File.find({ author: id });
+    console.log(filesFound);
     return res.send(filesFound);
   } catch (error) {
     return res.send({ message: "A ocurrido un error" });
