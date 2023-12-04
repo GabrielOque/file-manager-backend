@@ -138,7 +138,12 @@ export const updateUser = async (req, res) => {
 };
 
 export const logout = async (req, res) => {
-  res.cookie("token", "", { expires: new Date(0) });
+  res.cookie("token", "", {
+    expires: new Date(0),
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+  });
   return res.sendStatus(200);
 };
 
