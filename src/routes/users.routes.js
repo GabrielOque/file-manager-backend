@@ -9,6 +9,7 @@ import {
   getUsersFaculties,
   getToken,
   getUser,
+  deleteUser,
 } from "../controllers/users.controllers.js";
 
 const router = Router();
@@ -21,5 +22,6 @@ router.post("/logout", auth, logout);
 router.put("/:id", auth, updateUser);
 router.get("/faculties", adminAndSuperAdmin, getUsersFaculties);
 router.post("/token", auth, getToken);
+router.delete("/:id", auth, deleteUser);
 
 export default router;

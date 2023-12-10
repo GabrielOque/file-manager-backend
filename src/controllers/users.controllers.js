@@ -1,10 +1,10 @@
 import bcrypt from "bcrypt";
 import fs from "fs-extra";
 import User from "../models/User.js";
+import File from "../models/File.js";
+import Comment from "../models/Comment.js";
 import { createAccessToken } from "../libs/jwt.js";
 import { uploadImage } from "../libs/cloudinary.js";
-import jwt from "jsonwebtoken";
-import { TOKEN_SECRET } from "../config.js";
 
 function generateRandomCode() {
   return Math.floor(10000 + Math.random() * 90000);
@@ -104,11 +104,12 @@ export const login = async (req, res) => {
 export const updateUser = async (req, res) => {
   const { id } = req.params;
   const { _id, password, name, lastName, avatar } = req.body;
+  console.log(req.body);
   try {
     const passwordHash = await bcrypt.hash(password, 10);
 
     let image = null;
-    if (!avatar) {
+    if (req?.files?.avatar) {
       const result = await uploadImage(req.files.avatar.tempFilePath);
       await fs.remove(req.files.avatar.tempFilePath);
       image = {
@@ -119,18 +120,32 @@ export const updateUser = async (req, res) => {
       image = avatar;
     }
 
-    const newUpdate = {
-      _id,
-      password: passwordHash,
-      name,
-      lastName,
-      avatar: image,
-    };
+    if (password === "") {
+      const newUpdate = {
+        _id,
+        name,
+        lastName,
+        avatar: image,
+      };
 
-    const userUpdated = await User.findByIdAndUpdate(id, newUpdate, {
-      new: true,
-    });
-    return res.send(userUpdated);
+      const userUpdated = await User.findByIdAndUpdate(id, newUpdate, {
+        new: true,
+      });
+      return res.send(userUpdated);
+    } else {
+      const newUpdate = {
+        _id,
+        password: passwordHash,
+        name,
+        lastName,
+        avatar: image,
+      };
+
+      const userUpdated = await User.findByIdAndUpdate(id, newUpdate, {
+        new: true,
+      });
+      return res.send(userUpdated);
+    }
   } catch (error) {
     console.log(error);
     return res.send({ message: "A ocurrido un error" });
@@ -145,6 +160,30 @@ export const logout = async (req, res) => {
     sameSite: "None",
   });
   return res.sendStatus(200);
+};
+
+export const deleteUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    // Encuentra y elimina los archivos asociados al usuario
+    const filesToDelete = await File.find({ author: userId });
+    await File.deleteMany({ author: userId });
+    console.log(filesToDelete);
+    // Para cada archivo eliminado, elimina los comentarios asociados
+    for (let file of filesToDelete) {
+      await Comment.deleteMany({ file: file._id });
+    }
+
+    // Finalmente, elimina el usuario
+    const userDeleted = await User.findByIdAndDelete(userId);
+
+    console.log(userDeleted);
+    return res.send(userDeleted);
+  } catch (error) {
+    console.log(error);
+    return res.send({ message: "A ocurrido un error" });
+  }
 };
 
 export const getToken = async (req, res) => {
