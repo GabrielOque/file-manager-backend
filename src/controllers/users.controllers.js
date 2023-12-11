@@ -5,6 +5,7 @@ import File from "../models/File.js";
 import Comment from "../models/Comment.js";
 import { createAccessToken } from "../libs/jwt.js";
 import { uploadImage } from "../libs/cloudinary.js";
+import { transporter } from "../libs/nodemailer.js";
 
 function generateRandomCode() {
   return Math.floor(10000 + Math.random() * 90000);
@@ -48,14 +49,36 @@ export const getUsersFaculties = async (req, res) => {
 export const createUser = async (req, res) => {
   const { email, rol, faculty } = req.body;
   try {
+    const userFound = await User.findOne({ email: email });
+    if (userFound)
+      return res.send({ message: "Este correo no esta disponible" });
     const password = generateRandomCode().toString();
-    console.log(password);
     const passwordHash = await bcrypt.hash(password, 10);
     const newUser = new User({
       email,
       password: passwordHash,
       rol,
       faculty,
+    });
+
+    const sendEmail = `
+    <h1 style="text-align: center; padding: 20px; background-color: #D1272E; color: white; text-align: center; font-size: 30px;">¡BIENVENID@ A SwiftAdmin!</h1>
+    <table>
+      <tr>
+        <td>
+          <p style="padding: 0 40px; color: black;">Estamos encantados de tenerte como parte de nuestra comunidad. Tu cuenta ha sido creada con éxito. </p>
+          <p style="padding: 0 40px; color: black;">Contraseñan temporal: ${password}</p>
+          <a href="https://file-manager-frontend.onrender.com/" style="text-decoration: none; color: white; background-color: #D1272E; padding: 10px 20px; border-radius: 5px;">Iniciar sesión</a>
+          <p style="padding: 5px 40px; color: black;">Atentamente, <br>
+          <span style="font-weight: bold;">El Equipo de SwiftAdmin</span> </p>
+        </td>
+      </tr>
+    </table>`;
+    const info = await transporter.sendMail({
+      from: '"SwiftAdmin Welcome" <iiue2024@gmail.com>',
+      to: `${email}`,
+      subject: "Welcome",
+      html: sendEmail,
     });
 
     const userCreated = await newUser.save();
