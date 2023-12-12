@@ -60,20 +60,22 @@ export const createUser = async (req, res) => {
       rol,
       faculty,
     });
-
+    /*  <p style="padding: 0 40px; color: black;">
+  Puedes iniciar sesión copiando y pegando el siguiente enlace en tu navegador:
+  ${"https://file-manager-frontend.onrender.com/"}
+      </p>; */
     const sendEmail = `
-    <h1 style="text-align: center; padding: 20px; background-color: #D1272E; color: white; text-align: center; font-size: 30px;">¡BIENVENID@ A SwiftAdmin!</h1>
-    <table>
-      <tr>
-        <td>
-          <p style="padding: 0 40px; color: black;">Estamos encantados de tenerte como parte de nuestra comunidad. Tu cuenta ha sido creada con éxito. </p>
-          <p style="padding: 0 40px; color: black;">Contraseñan temporal: ${password}</p>
-          <a href="https://file-manager-frontend.onrender.com/" style="text-decoration: none; color: white; background-color: #D1272E; padding: 10px 20px; border-radius: 5px;">Iniciar sesión</a>
-          <p style="padding: 5px 40px; color: black;">Atentamente, <br>
-          <span style="font-weight: bold;">El Equipo de SwiftAdmin</span> </p>
-        </td>
-      </tr>
-    </table>`;
+<h1 style="text-align: center; padding: 20px; background-color: #D1272E; color: white; text-align: center; font-size: 30px;">¡BIENVENID@ A SwiftAdmin!</h1>
+<table>
+  <tr>
+    <td>
+      <p style="padding: 0 40px; color: black;">Estamos encantados de tenerte como parte de nuestra comunidad. Tu cuenta ha sido creada con éxito. </p>
+      <p style="padding: 0 40px; color: black;">Contraseñan temporal: ${password}</p>
+      <p style="padding: 5px 40px; color: black;">Atentamente, <br>
+      <span style="font-weight: bold;">El Equipo de SwiftAdmin</span> </p>
+    </td>
+  </tr>
+</table>`;
     const info = await transporter.sendMail({
       from: '"SwiftAdmin Welcome" <iiue2024@gmail.com>',
       to: `${email}`,
